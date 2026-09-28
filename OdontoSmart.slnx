@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Odontosmart.Application/Odontosmart.Application.csproj" />
+  <Project Path="OdontoSmart.Domain/OdontoSmart.Domain.csproj" />
+  <Project Path="OdontoSmart.Infraestructure/OdontoSmart.Infraestructure.csproj" />
+  <Project Path="OdontoSmart/OdontoSmart.Api.csproj" />
+</Solution>
