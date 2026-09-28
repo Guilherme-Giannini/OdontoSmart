@@ -1,0 +1,22 @@
+@model PacienteDetailsViewModel
+@{
+    ViewData["Title"] = "Excluir paciente";
+}
+
+<h1 class="h3 mb-3">Excluir paciente</h1>
+
+<div class="alert alert-danger" role="alert">
+    Tem certeza de que deseja excluir o paciente <strong>@Model.NomeCompleto</strong>?
+    Esta ação não poderá ser desfeita.
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <partial name="_PacienteDados" model="Model" />
+    </div>
+</div>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex flex-wrap gap-2">
+    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancelar</a>
+</form>

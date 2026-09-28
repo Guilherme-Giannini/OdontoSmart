@@ -1,0 +1,12 @@
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.acoes {
+    white-space: nowrap;
+}
+
+.observacoes {
+    white-space: pre-line;
+}

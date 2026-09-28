@@ -1,0 +1,33 @@
+@model PacienteDetailsViewModel
+@{
+    const string naoInformado = "Não informado";
+}
+
+<dl class="row mb-0">
+    <dt class="col-sm-3">Nome completo</dt>
+    <dd class="col-sm-9">@Model.NomeCompleto</dd>
+
+    <dt class="col-sm-3">CPF</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Cpf) ? naoInformado : Model.Cpf)</dd>
+
+    <dt class="col-sm-3">Data de nascimento</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.DataNascimento) ? naoInformado : Model.DataNascimento)</dd>
+
+    <dt class="col-sm-3">Sexo</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Sexo) ? naoInformado : Model.Sexo)</dd>
+
+    <dt class="col-sm-3">Telefone</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Telefone) ? naoInformado : Model.Telefone)</dd>
+
+    <dt class="col-sm-3">E-mail</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Email) ? naoInformado : Model.Email)</dd>
+
+    <dt class="col-sm-3">Observações</dt>
+    <dd class="col-sm-9 observacoes">@(string.IsNullOrEmpty(Model.Observacoes) ? naoInformado : Model.Observacoes)</dd>
+
+    <dt class="col-sm-3">Data de cadastro</dt>
+    <dd class="col-sm-9">@Model.DataCadastro</dd>
+
+    <dt class="col-sm-3">Última atualização</dt>
+    <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.DataAtualizacao) ? "Nunca alterado" : Model.DataAtualizacao)</dd>
+</dl>

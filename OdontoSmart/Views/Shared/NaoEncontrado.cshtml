@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Paciente não encontrado";
+}
+
+<div class="alert alert-warning">
+    <h1 class="h4">Paciente não encontrado</h1>
+    <p class="mb-0">O paciente solicitado não existe ou já foi excluído.</p>
+</div>
+
+<a asp-controller="Pacientes" asp-action="Index" class="btn btn-outline-secondary">Voltar para pacientes</a>

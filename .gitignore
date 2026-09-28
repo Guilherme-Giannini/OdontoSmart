@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Configuração local com credenciais (use appsettings.Development.example.json como modelo)
+OdontoSmart/appsettings.Development.json
+
+# Documentos de planejamento locais
+Planejamento/

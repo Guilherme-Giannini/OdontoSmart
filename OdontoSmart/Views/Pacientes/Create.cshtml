@@ -1,0 +1,23 @@
+@model PacienteCreateViewModel
+@{
+    ViewData["Title"] = "Novo paciente";
+}
+
+<h1 class="h3 mb-3">Novo paciente</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post" novalidate>
+            <partial name="_PacienteForm" model="Model" />
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Cadastrar paciente</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
