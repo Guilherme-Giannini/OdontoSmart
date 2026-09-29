@@ -1,7 +1,10 @@
+using System.Globalization;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.WebEncoders;
+using OdontoSmart.Application.Orcamentos;
 using OdontoSmart.Application.Pacientes;
 using OdontoSmart.Infraestructure;
 using OdontoSmart.Infraestructure.Data;
@@ -24,15 +27,28 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.Configure<WebEncoderOptions>(options =>
     options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
-var connectionString =builder.Configuration.GetConnectionString("OdontoSmart")
+var connectionString = builder.Configuration.GetConnectionString("OdontoSmart")
     ?? throw new InvalidOperationException("A connection string 'OdontoSmart' não foi configurada.");
 
 builder.Services.AddInfraestrutura(connectionString);
 builder.Services.AddScoped<IPacienteService, PacienteService>();
+builder.Services.AddScoped<IOrcamentoService, OrcamentoService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+// Números e datas trafegam em formato invariante ("1234.56", "2026-09-28"), que é o formato
+// enviado por <input type="number"> e <input type="date">. A apresentação em pt-BR (R$ 1.234,56)
+// é feita explicitamente pelas classes de formatação das ViewModels.
+var culturaInvariante = CultureInfo.InvariantCulture;
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(culturaInvariante),
+    SupportedCultures = [culturaInvariante],
+    SupportedUICultures = [culturaInvariante],
+    RequestCultureProviders = []
+});
 
 if (app.Environment.IsDevelopment())
 {

@@ -31,6 +31,9 @@ public class PacienteService(IPacienteRepository repository) : IPacienteService
         return paciente is null ? null : PacienteDto.De(paciente);
     }
 
+    public Task<IReadOnlyList<PacienteOpcaoDto>> ListarOpcoesAsync(CancellationToken cancellationToken = default) =>
+        repository.ListarOpcoesAsync(cancellationToken);
+
     public async Task<Resultado<Guid>> CriarAsync(PacienteDados dados, CancellationToken cancellationToken = default)
     {
         var erros = await ValidarAsync(dados, pacienteId: null, cancellationToken);
@@ -86,6 +89,10 @@ public class PacienteService(IPacienteRepository repository) : IPacienteService
         var paciente = await repository.ObterPorIdAsync(id, cancellationToken);
         if (paciente is null)
             return Resultado.RecursoNaoEncontrado();
+
+        if (await repository.PossuiOrcamentosAsync(id, cancellationToken))
+            return Resultado.Falha([new(string.Empty,
+                "Não é possível excluir o paciente porque existem orçamentos associados a ele.")]);
 
         repository.Remover(paciente);
         await repository.SalvarAlteracoesAsync(cancellationToken);

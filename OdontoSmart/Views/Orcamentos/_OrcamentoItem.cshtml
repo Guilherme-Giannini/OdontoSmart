@@ -1,0 +1,31 @@
+@model OrcamentoItemViewModel
+
+@* Uma linha de item. Também é usada como modelo (<template>) para novas linhas, com o índice "__index__". *@
+<tr data-item>
+    <td>
+        <label asp-for="Descricao" class="visually-hidden"></label>
+        <input asp-for="Descricao" class="form-control" placeholder="Procedimento (ex.: Restauração em resina)" autocomplete="off" />
+        <span asp-validation-for="Descricao" class="text-danger small"></span>
+
+        <label asp-for="Observacoes" class="visually-hidden"></label>
+        <input asp-for="Observacoes" class="form-control form-control-sm mt-1" placeholder="Observações do item (opcional)" autocomplete="off" />
+        <span asp-validation-for="Observacoes" class="text-danger small"></span>
+    </td>
+    <td class="coluna-numero">
+        <label asp-for="Quantidade" class="visually-hidden"></label>
+        <input asp-for="Quantidade" type="number" min="0.01" step="0.01" class="form-control text-end" data-quantidade />
+        <span asp-validation-for="Quantidade" class="text-danger small"></span>
+    </td>
+    <td class="coluna-valor">
+        <label asp-for="ValorUnitario" class="visually-hidden"></label>
+        <div class="input-group">
+            <span class="input-group-text">R$</span>
+            <input asp-for="ValorUnitario" type="number" min="0" step="0.01" class="form-control text-end" placeholder="0.00" data-valor-unitario />
+        </div>
+        <span asp-validation-for="ValorUnitario" class="text-danger small"></span>
+    </td>
+    <td class="text-end text-nowrap pt-3" data-item-total>@OrcamentoFormatacao.Moeda(Model.ValorTotal)</td>
+    <td class="text-end">
+        <button type="button" class="btn btn-outline-danger btn-sm" data-remover-item title="Remover item" aria-label="Remover item">Remover</button>
+    </td>
+</tr>

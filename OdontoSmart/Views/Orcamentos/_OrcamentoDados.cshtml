@@ -1,0 +1,92 @@
+@model OrcamentoDetailsViewModel
+@{
+    const string naoInformado = "Não informado";
+}
+
+<div class="row g-3 mb-3">
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">Paciente</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Nome</dt>
+                    <dd class="col-sm-8">
+                        <a asp-controller="Pacientes" asp-action="Details" asp-route-id="@Model.PacienteId">@Model.PacienteNome</a>
+                    </dd>
+
+                    <dt class="col-sm-4">CPF</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.PacienteCpf) ? naoInformado : Model.PacienteCpf)</dd>
+
+                    <dt class="col-sm-4">Telefone</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.PacienteTelefone) ? naoInformado : Model.PacienteTelefone)</dd>
+
+                    <dt class="col-sm-4">E-mail</dt>
+                    <dd class="col-sm-8 mb-0">@(string.IsNullOrEmpty(Model.PacienteEmail) ? naoInformado : Model.PacienteEmail)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">Orçamento</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8"><partial name="_StatusBadge" model="Model.Status" /></dd>
+
+                    <dt class="col-sm-4">Data de cadastro</dt>
+                    <dd class="col-sm-8">@Model.DataCadastro</dd>
+
+                    <dt class="col-sm-4">Última atualização</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.DataAtualizacao) ? "Nunca alterado" : Model.DataAtualizacao)</dd>
+
+                    <dt class="col-sm-4">Validade</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.Validade) ? "Sem validade definida" : Model.Validade)</dd>
+
+                    <dt class="col-sm-4">Observações</dt>
+                    <dd class="col-sm-8 mb-0 observacoes">@(string.IsNullOrEmpty(Model.Observacoes) ? naoInformado : Model.Observacoes)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header">Itens</div>
+    <div class="table-responsive">
+        <table class="table mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Descrição</th>
+                    <th scope="col" class="text-end">Quantidade</th>
+                    <th scope="col" class="text-end">Valor unitário</th>
+                    <th scope="col" class="text-end">Valor total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Itens)
+                {
+                    <tr>
+                        <td>
+                            @item.Descricao
+                            @if (!string.IsNullOrEmpty(item.Observacoes))
+                            {
+                                <div class="text-muted small">@item.Observacoes</div>
+                            }
+                        </td>
+                        <td class="text-end">@item.Quantidade</td>
+                        <td class="text-end text-nowrap">@item.ValorUnitario</td>
+                        <td class="text-end text-nowrap">@item.ValorTotal</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="3" class="text-end">Valor total do orçamento</th>
+                    <td class="text-end text-nowrap fs-5 fw-semibold">@Model.ValorTotal</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

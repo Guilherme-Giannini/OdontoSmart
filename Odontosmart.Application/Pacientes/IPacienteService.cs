@@ -12,6 +12,8 @@ public interface IPacienteService
 
     Task<PacienteDto?> ObterPorIdAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<PacienteOpcaoDto>> ListarOpcoesAsync(CancellationToken cancellationToken = default);
+
     Task<Resultado<Guid>> CriarAsync(PacienteDados dados, CancellationToken cancellationToken = default);
 
     Task<Resultado> AtualizarAsync(Guid id, PacienteDados dados, CancellationToken cancellationToken = default);

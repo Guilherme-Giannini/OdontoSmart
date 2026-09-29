@@ -1,4 +1,12 @@
 <Solution>
+  <Folder Name="/Planejamento/" />
+  <Folder Name="/Planejamento/Specs/" />
+  <Folder Name="/Planejamento/Specs/Orçamentos/">
+    <File Path="Planejamento/Specs/Orcamentos/SpecOrçamentos.txt" />
+  </Folder>
+  <Folder Name="/Planejamento/Specs/Pacientes/">
+    <File Path="Planejamento/Specs/Pacientes/Spec.txt" />
+  </Folder>
   <Project Path="Odontosmart.Application/Odontosmart.Application.csproj" />
   <Project Path="OdontoSmart.Domain/OdontoSmart.Domain.csproj" />
   <Project Path="OdontoSmart.Infraestructure/OdontoSmart.Infraestructure.csproj" />

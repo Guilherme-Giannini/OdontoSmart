@@ -10,3 +10,19 @@
 .observacoes {
     white-space: pre-line;
 }
+
+.tabela-itens td {
+    vertical-align: top;
+}
+
+.tabela-itens .coluna-numero {
+    width: 9rem;
+}
+
+.tabela-itens .coluna-valor {
+    width: 12rem;
+}
+
+.tabela-itens {
+    min-width: 44rem;
+}

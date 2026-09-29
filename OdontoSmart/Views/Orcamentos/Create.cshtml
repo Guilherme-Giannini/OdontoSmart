@@ -1,0 +1,24 @@
+@model OrcamentoCreateViewModel
+@{
+    ViewData["Title"] = "Novo orçamento";
+}
+
+<h1 class="h3 mb-3">Novo orçamento</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post" novalidate data-orcamento-form>
+            <partial name="_OrcamentoForm" model="Model" />
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Salvar orçamento</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/orcamento-form.js" asp-append-version="true"></script>
+}

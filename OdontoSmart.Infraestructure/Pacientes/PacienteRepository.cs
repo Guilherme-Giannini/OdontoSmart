@@ -21,7 +21,7 @@ public class PacienteRepository(ApplicationDbContext context) : IPacienteReposit
 
         if (!string.IsNullOrWhiteSpace(termo))
         {
-            var padraoNome = $"%{EscaparLike(termo.Trim())}%";
+            var padraoNome = Like.Contem(termo.Trim());
             var digitos = Digitos.Extrair(termo);
 
             if (digitos.Length > 0)
@@ -56,6 +56,16 @@ public class PacienteRepository(ApplicationDbContext context) : IPacienteReposit
             p => p.Cpf == cpf && (ignorarPacienteId == null || p.Id != ignorarPacienteId),
             cancellationToken);
 
+    public Task<bool> PossuiOrcamentosAsync(Guid pacienteId, CancellationToken cancellationToken = default) =>
+        context.Orcamentos.AnyAsync(o => o.PacienteId == pacienteId, cancellationToken);
+
+    public async Task<IReadOnlyList<PacienteOpcaoDto>> ListarOpcoesAsync(CancellationToken cancellationToken = default) =>
+        await context.Pacientes
+            .AsNoTracking()
+            .OrderBy(p => p.NomeCompleto)
+            .Select(p => new PacienteOpcaoDto(p.Id, p.NomeCompleto, p.Cpf))
+            .ToListAsync(cancellationToken);
+
     public void Adicionar(Paciente paciente) => context.Pacientes.Add(paciente);
 
     public void Remover(Paciente paciente) => context.Pacientes.Remove(paciente);
@@ -77,9 +87,4 @@ public class PacienteRepository(ApplicationDbContext context) : IPacienteReposit
             throw new CpfDuplicadoException(ex);
         }
     }
-
-    // Escapa os curingas do LIKE para que o termo digitado seja tratado literalmente
-    // (o PostgreSQL usa "\" como caractere de escape padrão).
-    private static string EscaparLike(string valor) =>
-        valor.Replace(@"\", @"\\").Replace("%", @"\%").Replace("_", @"\_");
 }

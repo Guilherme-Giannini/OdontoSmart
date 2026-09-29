@@ -15,6 +15,11 @@ public interface IPacienteRepository
 
     Task<bool> ExisteCpfAsync(string cpf, Guid? ignorarPacienteId, CancellationToken cancellationToken = default);
 
+    Task<bool> PossuiOrcamentosAsync(Guid pacienteId, CancellationToken cancellationToken = default);
+
+    /// <summary>Todos os pacientes (id, nome e CPF), ordenados por nome, para seleção em formulários.</summary>
+    Task<IReadOnlyList<PacienteOpcaoDto>> ListarOpcoesAsync(CancellationToken cancellationToken = default);
+
     void Adicionar(Paciente paciente);
 
     void Remover(Paciente paciente);

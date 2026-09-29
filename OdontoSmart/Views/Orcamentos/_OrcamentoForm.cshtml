@@ -1,0 +1,83 @@
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@model OrcamentoFormViewModel
+@{
+    // Modelo de nova linha: os campos são nomeados "Itens[__index__].Campo" e reindexados pelo script.
+    var modeloItem = new OrcamentoItemViewModel { Quantidade = 1 };
+    var viewDataModelo = new ViewDataDictionary<OrcamentoItemViewModel>(ViewData, modeloItem);
+    viewDataModelo.TemplateInfo.HtmlFieldPrefix = "Itens[__index__]";
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <label asp-for="PacienteId" class="form-label"></label> <span class="text-danger">*</span>
+        <select asp-for="PacienteId" asp-items="Model.Pacientes" class="form-select">
+            <option value="">Selecione o paciente</option>
+        </select>
+        <span asp-validation-for="PacienteId" class="text-danger small"></span>
+        @if (!Model.Pacientes.Any())
+        {
+            <div class="form-text">
+                Nenhum paciente cadastrado. <a asp-controller="Pacientes" asp-action="Create">Cadastre um paciente</a> antes de criar o orçamento.
+            </div>
+        }
+    </div>
+
+    <div class="col-md-3">
+        <label asp-for="Validade" class="form-label"></label>
+        <input asp-for="Validade" class="form-control" />
+        <span asp-validation-for="Validade" class="text-danger small"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="Observacoes" class="form-label"></label>
+        <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Observacoes" class="text-danger small"></span>
+    </div>
+</div>
+
+<h2 class="h5">Itens do orçamento</h2>
+<span asp-validation-for="Itens" class="text-danger small d-block mb-2"></span>
+
+<div class="table-responsive">
+    <table class="table align-top mb-2 tabela-itens">
+        <thead>
+            <tr>
+                <th scope="col">Descrição <span class="text-danger">*</span></th>
+                <th scope="col" class="coluna-numero">Quantidade <span class="text-danger">*</span></th>
+                <th scope="col" class="coluna-valor">Valor unitário <span class="text-danger">*</span></th>
+                <th scope="col" class="text-end">Valor total</th>
+                <th scope="col"><span class="visually-hidden">Ações</span></th>
+            </tr>
+        </thead>
+        <tbody data-itens>
+            @for (var i = 0; i < Model.Itens.Count; i++)
+            {
+                <partial name="_OrcamentoItem" for="Itens[i]" />
+            }
+        </tbody>
+        <tfoot>
+            <tr data-itens-vazio @(Model.Itens.Count > 0 ? "hidden" : null)>
+                <td colspan="5" class="text-muted">Nenhum item adicionado.</td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-adicionar-item>+ Adicionar item</button>
+                </td>
+                <td class="text-end text-nowrap">
+                    <div class="small text-muted">Valor total do orçamento</div>
+                    <div class="fs-5 fw-semibold" data-orcamento-total>@OrcamentoFormatacao.Moeda(Model.ValorTotal)</div>
+                </td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<p class="form-text mt-0">
+    Os valores exibidos são uma prévia. O cálculo definitivo é refeito pelo sistema ao salvar.
+</p>
+
+<template id="modelo-item-orcamento">
+    <partial name="_OrcamentoItem" model="modeloItem" view-data="viewDataModelo" />
+</template>

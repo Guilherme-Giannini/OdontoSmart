@@ -8,6 +8,7 @@ namespace OdontoSmart.Web.Controllers;
 public class PacientesController(IPacienteService pacienteService) : Controller
 {
     private const string MensagemSucesso = "MensagemSucesso";
+    private const string MensagemErro = "MensagemErro";
 
     [HttpGet]
     public async Task<IActionResult> Index(string? busca, int pagina = 1, CancellationToken cancellationToken = default)
@@ -99,6 +100,12 @@ public class PacientesController(IPacienteService pacienteService) : Controller
         var resultado = await pacienteService.ExcluirAsync(id, cancellationToken);
         if (resultado.NaoEncontrado)
             return PacienteNaoEncontrado();
+
+        if (!resultado.Sucesso)
+        {
+            TempData[MensagemErro] = string.Join(" ", resultado.Erros.Select(e => e.Mensagem));
+            return RedirectToAction(nameof(Details), new { id });
+        }
 
         TempData[MensagemSucesso] = "Paciente excluído com sucesso.";
         return RedirectToAction(nameof(Index));

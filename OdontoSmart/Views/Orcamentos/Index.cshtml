@@ -1,0 +1,136 @@
+@model OrcamentoListViewModel
+@{
+    ViewData["Title"] = "Orçamentos";
+
+    const int paginasVisiveis = 5;
+    var primeiraPagina = Math.Max(1, Model.PaginaAtual - paginasVisiveis / 2);
+    var ultimaPagina = Math.Min(Model.TotalPaginas, primeiraPagina + paginasVisiveis - 1);
+    primeiraPagina = Math.Max(1, ultimaPagina - paginasVisiveis + 1);
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">Orçamentos</h1>
+    <a asp-action="Create" class="btn btn-primary">Novo orçamento</a>
+</div>
+
+<form asp-action="Index" method="get" class="card card-body mb-3" role="search">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label for="busca" class="form-label small mb-1">Paciente</label>
+            <input type="search" id="busca" name="busca" value="@Model.Busca" class="form-control"
+                   placeholder="Nome ou CPF do paciente" maxlength="200" />
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <label for="status" class="form-label small mb-1">Status</label>
+            <select id="status" name="status" class="form-select"
+                    asp-items="@(new SelectList(OrcamentoFormatacao.TodosOsStatus, "Value", "Text", Model.Status?.ToString()))">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <label for="dataInicio" class="form-label small mb-1">Cadastrado de</label>
+            <input type="date" id="dataInicio" name="dataInicio" class="form-control"
+                   value="@Model.DataInicio?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-sm-6 col-md-2">
+            <label for="dataFim" class="form-label small mb-1">até</label>
+            <input type="date" id="dataFim" name="dataFim" class="form-control"
+                   value="@Model.DataFim?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-sm-6 col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-outline-primary flex-grow-1">Pesquisar</button>
+            @if (Model.PossuiFiltros)
+            {
+                <a asp-action="Index" class="btn btn-link px-1">Limpar</a>
+            }
+        </div>
+    </div>
+</form>
+
+@if (Model.Orcamentos.Count == 0)
+{
+    <div class="alert alert-info">
+        @if (Model.PossuiFiltros)
+        {
+            <text>Nenhum orçamento encontrado para os filtros informados.</text>
+        }
+        else if (Model.TotalRegistros > 0)
+        {
+            <text>Nenhum resultado encontrado nesta página.</text>
+        }
+        else
+        {
+            <text>Nenhum orçamento cadastrado.</text>
+        }
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Paciente</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Validade</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-end">Itens</th>
+                    <th scope="col" class="text-end">Valor total</th>
+                    <th scope="col" class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var orcamento in Model.Orcamentos)
+                {
+                    <tr>
+                        <td>
+                            @orcamento.PacienteNome
+                            @if (!string.IsNullOrEmpty(orcamento.PacienteCpf))
+                            {
+                                <div class="text-muted small">CPF @orcamento.PacienteCpf</div>
+                            }
+                        </td>
+                        <td>@orcamento.DataCadastro</td>
+                        <td>@(string.IsNullOrEmpty(orcamento.Validade) ? "—" : orcamento.Validade)</td>
+                        <td><partial name="_StatusBadge" model="orcamento.Status" /></td>
+                        <td class="text-end">@orcamento.QuantidadeItens</td>
+                        <td class="text-end fw-semibold text-nowrap">@orcamento.ValorTotal</td>
+                        <td class="text-end acoes">
+                            <a asp-action="Details" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-secondary">Visualizar</a>
+                            <a asp-action="Edit" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a asp-action="Details" asp-route-id="@orcamento.Id" asp-fragment="alterar-status" class="btn btn-sm btn-outline-warning">Alterar status</a>
+                            <a asp-action="Delete" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (Model.TotalPaginas > 1)
+{
+    <nav aria-label="Paginação de orçamentos" class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span class="text-muted small">
+            @Model.TotalRegistros orçamento(s) · página @Model.PaginaAtual de @Model.TotalPaginas
+        </span>
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.PaginaAtual <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="Model.RotaDaPagina(Model.PaginaAtual - 1)">Anterior</a>
+            </li>
+            @for (var pagina = primeiraPagina; pagina <= ultimaPagina; pagina++)
+            {
+                <li class="page-item @(pagina == Model.PaginaAtual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="Model.RotaDaPagina(pagina)">@pagina</a>
+                </li>
+            }
+            <li class="page-item @(Model.PaginaAtual >= Model.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-all-route-data="Model.RotaDaPagina(Model.PaginaAtual + 1)">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+}
+else if (Model.TotalRegistros > 0)
+{
+    <p class="text-muted small">@Model.TotalRegistros orçamento(s)</p>
+}
