@@ -1,12 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OdontoSmart.Application.Common;
 using OdontoSmart.Application.Orcamentos;
 using OdontoSmart.Application.Pacientes;
 using OdontoSmart.Domain.Enums;
+using OdontoSmart.Web.Autorizacao;
 using OdontoSmart.Web.ViewModels.Orcamentos;
 
 namespace OdontoSmart.Web.Controllers;
 
+[Authorize(Policy = Politicas.ConsultarOrcamentos)]
 public class OrcamentosController(
     IOrcamentoService orcamentoService,
     IPacienteService pacienteService) : Controller
@@ -39,6 +42,7 @@ public class OrcamentosController(
         return View(OrcamentoDetailsViewModel.De(orcamento));
     }
 
+    [Authorize(Policy = Politicas.EditarOrcamentos)]
     [HttpGet]
     public async Task<IActionResult> Create(Guid? pacienteId, CancellationToken cancellationToken)
     {
@@ -48,6 +52,7 @@ public class OrcamentosController(
         return View(model);
     }
 
+    [Authorize(Policy = Politicas.EditarOrcamentos)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(OrcamentoCreateViewModel model, CancellationToken cancellationToken)
@@ -68,6 +73,7 @@ public class OrcamentosController(
         return View(model);
     }
 
+    [Authorize(Policy = Politicas.EditarOrcamentos)]
     [HttpGet]
     public async Task<IActionResult> Edit([FromRoute] Guid id, CancellationToken cancellationToken)
     {
@@ -81,6 +87,7 @@ public class OrcamentosController(
         return View(model);
     }
 
+    [Authorize(Policy = Politicas.EditarOrcamentos)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit([FromRoute] Guid id, OrcamentoEditViewModel model, CancellationToken cancellationToken)
@@ -111,6 +118,7 @@ public class OrcamentosController(
         return View(model);
     }
 
+    [Authorize(Policy = Politicas.AlterarStatusOrcamentos)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AlterarStatus(
@@ -134,6 +142,7 @@ public class OrcamentosController(
         return RedirectToAction(nameof(Details), new { id });
     }
 
+    [Authorize(Policy = Politicas.ExcluirOrcamentos)]
     [HttpGet]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
@@ -144,6 +153,7 @@ public class OrcamentosController(
         return View(OrcamentoDetailsViewModel.De(orcamento));
     }
 
+    [Authorize(Policy = Politicas.ExcluirOrcamentos)]
     [HttpPost]
     [ActionName(nameof(Delete))]
     [ValidateAntiForgeryToken]

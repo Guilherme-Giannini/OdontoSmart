@@ -1,0 +1,54 @@
+@model ProfissionalFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <label asp-for="NomeExibicao" class="form-label"></label> <span class="text-danger">*</span>
+        <input asp-for="NomeExibicao" class="form-control" placeholder="Ex.: Dra. Ana Souza" autocomplete="off" />
+        <span asp-validation-for="NomeExibicao" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Cro" class="form-label"></label> <span class="text-danger">*</span>
+        <input asp-for="Cro" class="form-control" inputmode="numeric" maxlength="10" placeholder="Somente números" autocomplete="off" />
+        <span asp-validation-for="Cro" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-2">
+        <label asp-for="CroUf" class="form-label"></label> <span class="text-danger">*</span>
+        <select asp-for="CroUf" asp-items="ProfissionalFormatacao.OpcoesUf" class="form-select">
+            <option value="">UF</option>
+        </select>
+        <span asp-validation-for="CroUf" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Especialidade" class="form-label"></label>
+        <input asp-for="Especialidade" class="form-control" placeholder="Ex.: Ortodontia" />
+        <span asp-validation-for="Especialidade" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Telefone" class="form-label"></label>
+        <input asp-for="Telefone" type="tel" class="form-control" placeholder="(00) 00000-0000" />
+        <span asp-validation-for="Telefone" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-8">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" placeholder="profissional@exemplo.com" />
+        <span asp-validation-for="Email" class="text-danger small"></span>
+    </div>
+
+    <div class="col-12">
+        <label asp-for="UsuarioId" class="form-label"></label>
+        <select asp-for="UsuarioId" asp-items="Model.Usuarios" class="form-select">
+            <option value="">Sem acesso ao sistema</option>
+        </select>
+        <div class="form-text">
+            Opcional. Somente usuários ativos de perfil Dentista, ainda não vinculados a outro profissional.
+        </div>
+        <span asp-validation-for="UsuarioId" class="text-danger small"></span>
+    </div>
+</div>

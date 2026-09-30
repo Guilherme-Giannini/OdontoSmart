@@ -1,0 +1,57 @@
+@using OdontoSmart.Web.ViewModels.Conta
+@model AlterarSenhaViewModel
+@{
+    ViewData["Title"] = "Alterar senha";
+}
+
+<h1 class="h3 mb-3">Alterar senha</h1>
+
+@if (Model.Obrigatoria)
+{
+    <div class="alert alert-warning" role="alert">
+        Para continuar, defina uma nova senha. A senha atual foi definida pelo administrador e é temporária.
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="AlterarSenha" method="post" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="SenhaAtual" class="form-label"></label> <span class="text-danger">*</span>
+                        <input asp-for="SenhaAtual" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="SenhaAtual" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="NovaSenha" class="form-label"></label> <span class="text-danger">*</span>
+                        <input asp-for="NovaSenha" class="form-control" autocomplete="new-password" />
+                        <div class="form-text">De 8 a 128 caracteres, com pelo menos uma letra e um número.</div>
+                        <span asp-validation-for="NovaSenha" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmacaoNovaSenha" class="form-label"></label> <span class="text-danger">*</span>
+                        <input asp-for="ConfirmacaoNovaSenha" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="ConfirmacaoNovaSenha" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Alterar senha</button>
+                        @if (!Model.Obrigatoria)
+                        {
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,23 @@
+@model ProfissionalEditViewModel
+@{
+    ViewData["Title"] = "Editar profissional";
+}
+
+<h1 class="h3 mb-3">Editar profissional</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post" novalidate>
+            <partial name="_ProfissionalForm" model="Model" />
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

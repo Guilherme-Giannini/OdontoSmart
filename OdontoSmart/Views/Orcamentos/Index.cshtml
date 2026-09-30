@@ -2,6 +2,10 @@
 @{
     ViewData["Title"] = "Orçamentos";
 
+    var podeEditar = await Autorizacao.PermiteAsync(User, Politicas.EditarOrcamentos);
+    var podeAlterarStatus = await Autorizacao.PermiteAsync(User, Politicas.AlterarStatusOrcamentos);
+    var podeExcluir = await Autorizacao.PermiteAsync(User, Politicas.ExcluirOrcamentos);
+
     const int paginasVisiveis = 5;
     var primeiraPagina = Math.Max(1, Model.PaginaAtual - paginasVisiveis / 2);
     var ultimaPagina = Math.Min(Model.TotalPaginas, primeiraPagina + paginasVisiveis - 1);
@@ -10,7 +14,10 @@
 
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
     <h1 class="h3 mb-0">Orçamentos</h1>
-    <a asp-action="Create" class="btn btn-primary">Novo orçamento</a>
+    @if (podeEditar)
+    {
+        <a asp-action="Create" class="btn btn-primary">Novo orçamento</a>
+    }
 </div>
 
 <form asp-action="Index" method="get" class="card card-body mb-3" role="search">
@@ -97,9 +104,18 @@ else
                         <td class="text-end fw-semibold text-nowrap">@orcamento.ValorTotal</td>
                         <td class="text-end acoes">
                             <a asp-action="Details" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-secondary">Visualizar</a>
-                            <a asp-action="Edit" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-primary">Editar</a>
-                            <a asp-action="Details" asp-route-id="@orcamento.Id" asp-fragment="alterar-status" class="btn btn-sm btn-outline-warning">Alterar status</a>
-                            <a asp-action="Delete" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                            @if (podeEditar)
+                            {
+                                <a asp-action="Edit" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            }
+                            @if (podeAlterarStatus)
+                            {
+                                <a asp-action="Details" asp-route-id="@orcamento.Id" asp-fragment="alterar-status" class="btn btn-sm btn-outline-warning">Alterar status</a>
+                            }
+                            @if (podeExcluir)
+                            {
+                                <a asp-action="Delete" asp-route-id="@orcamento.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                            }
                         </td>
                     </tr>
                 }

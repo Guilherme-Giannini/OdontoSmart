@@ -1,3 +1,10 @@
+@using OdontoSmart.Application.Usuarios
+@inject IUsuarioAtual UsuarioAtual
+@{
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var podeVerProfissionais = autenticado && await Autorizacao.PermiteAsync(User, Politicas.ConsultarProfissionais);
+    var podeGerenciarUsuarios = autenticado && await Autorizacao.PermiteAsync(User, Politicas.GerenciarUsuarios);
+}
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,42 +16,77 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-dark bg-primary mb-4">
+        <nav class="navbar navbar-expand-md navbar-dark bg-primary mb-4">
             <div class="container">
                 <a class="navbar-brand fw-semibold" asp-controller="Pacientes" asp-action="Index">OdontoSmart</a>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-controller="Orcamentos" asp-action="Index">Orçamentos</a>
-                    </li>
-                </ul>
+                @if (autenticado)
+                {
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu-principal"
+                            aria-controls="menu-principal" aria-expanded="false" aria-label="Abrir menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="menu-principal">
+                        <ul class="navbar-nav me-auto">
+                            @if (await Autorizacao.PermiteAsync(User, Politicas.ConsultarPacientes))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
+                                </li>
+                            }
+                            @if (await Autorizacao.PermiteAsync(User, Politicas.ConsultarOrcamentos))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Orcamentos" asp-action="Index">Orçamentos</a>
+                                </li>
+                            }
+                            @if (podeVerProfissionais)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Profissionais" asp-action="Index">Profissionais</a>
+                                </li>
+                            }
+                            @if (podeGerenciarUsuarios)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Usuarios" asp-action="Index">Usuários</a>
+                                </li>
+                            }
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @UsuarioAtual.NomeCompleto
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <span class="dropdown-item-text small text-muted">
+                                            Perfil: @(UsuarioAtual.Perfil?.Descricao())
+                                        </span>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-controller="Conta" asp-action="AlterarSenha">Alterar senha</a></li>
+                                    <li>
+                                        <form asp-controller="Conta" asp-action="Sair" method="post">
+                                            <button type="submit" class="dropdown-item">Sair</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                }
             </div>
         </nav>
     </header>
 
     <main class="container pb-5">
-        @if (TempData["MensagemSucesso"] is string mensagemSucesso)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                @mensagemSucesso
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        }
-
-        @if (TempData["MensagemErro"] is string mensagemErro)
-        {
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                @mensagemErro
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-            </div>
-        }
+        <partial name="_Mensagens" />
 
         @RenderBody()
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/confirmacao.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

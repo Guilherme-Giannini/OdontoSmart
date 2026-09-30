@@ -1,0 +1,117 @@
+@model ProfissionalListViewModel
+@{
+    ViewData["Title"] = "Profissionais";
+
+    var podeGerenciar = await Autorizacao.PermiteAsync(User, Politicas.GerenciarProfissionais);
+
+    const int paginasVisiveis = 5;
+    var primeiraPagina = Math.Max(1, Model.PaginaAtual - paginasVisiveis / 2);
+    var ultimaPagina = Math.Min(Model.TotalPaginas, primeiraPagina + paginasVisiveis - 1);
+    primeiraPagina = Math.Max(1, ultimaPagina - paginasVisiveis + 1);
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">Profissionais</h1>
+    @if (podeGerenciar)
+    {
+        <a asp-action="Create" class="btn btn-primary">Novo profissional</a>
+    }
+</div>
+
+<form asp-action="Index" method="get" class="row g-2 mb-3" role="search">
+    <div class="col-sm-8 col-md-6">
+        <label for="busca" class="visually-hidden">Pesquisar profissionais</label>
+        <input type="search" id="busca" name="busca" value="@Model.Busca" class="form-control"
+               placeholder="Pesquisar por nome ou número do CRO" maxlength="200" />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-primary">Pesquisar</button>
+        @if (!string.IsNullOrEmpty(Model.Busca))
+        {
+            <a asp-action="Index" class="btn btn-link">Limpar</a>
+        }
+    </div>
+</form>
+
+@if (Model.Profissionais.Count == 0)
+{
+    <div class="alert alert-info">
+        @if (!string.IsNullOrEmpty(Model.Busca))
+        {
+            <text>Nenhum profissional encontrado para "@Model.Busca".</text>
+        }
+        else if (Model.TotalRegistros > 0)
+        {
+            <text>Nenhum resultado encontrado nesta página.</text>
+        }
+        else
+        {
+            <text>Nenhum profissional cadastrado.</text>
+        }
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Nome de exibição</th>
+                    <th scope="col">CRO</th>
+                    <th scope="col">Especialidade</th>
+                    <th scope="col">Usuário vinculado</th>
+                    <th scope="col">Situação</th>
+                    <th scope="col" class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var profissional in Model.Profissionais)
+                {
+                    <tr class="@(profissional.Ativo ? "" : "text-muted")">
+                        <td>@profissional.NomeExibicao</td>
+                        <td class="text-nowrap">@profissional.Cro</td>
+                        <td>@(string.IsNullOrEmpty(profissional.Especialidade) ? "—" : profissional.Especialidade)</td>
+                        <td>@(string.IsNullOrEmpty(profissional.UsuarioVinculado) ? "—" : profissional.UsuarioVinculado)</td>
+                        <td>
+                            <span class="badge rounded-pill @ProfissionalFormatacao.ClasseSituacao(profissional.Ativo)">@ProfissionalFormatacao.Situacao(profissional.Ativo)</span>
+                        </td>
+                        <td class="text-end acoes">
+                            <a asp-action="Details" asp-route-id="@profissional.Id" class="btn btn-sm btn-outline-secondary">Visualizar</a>
+                            @if (podeGerenciar)
+                            {
+                                <a asp-action="Edit" asp-route-id="@profissional.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (Model.TotalPaginas > 1)
+{
+    <nav aria-label="Paginação de profissionais" class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span class="text-muted small">
+            @Model.TotalRegistros profissional(is) · página @Model.PaginaAtual de @Model.TotalPaginas
+        </span>
+        <ul class="pagination mb-0">
+            <li class="page-item @(Model.PaginaAtual <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-busca="@Model.Busca" asp-route-pagina="@(Model.PaginaAtual - 1)">Anterior</a>
+            </li>
+            @for (var pagina = primeiraPagina; pagina <= ultimaPagina; pagina++)
+            {
+                <li class="page-item @(pagina == Model.PaginaAtual ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-busca="@Model.Busca" asp-route-pagina="@pagina">@pagina</a>
+                </li>
+            }
+            <li class="page-item @(Model.PaginaAtual >= Model.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-busca="@Model.Busca" asp-route-pagina="@(Model.PaginaAtual + 1)">Próxima</a>
+            </li>
+        </ul>
+    </nav>
+}
+else if (Model.TotalRegistros > 0)
+{
+    <p class="text-muted small">@Model.TotalRegistros profissional(is)</p>
+}

@@ -1,0 +1,23 @@
+@model ProfissionalCreateViewModel
+@{
+    ViewData["Title"] = "Novo profissional";
+}
+
+<h1 class="h3 mb-3">Novo profissional</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post" novalidate>
+            <partial name="_ProfissionalForm" model="Model" />
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Cadastrar profissional</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

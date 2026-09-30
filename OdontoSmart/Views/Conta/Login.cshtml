@@ -1,0 +1,39 @@
+@using OdontoSmart.Web.ViewModels.Conta
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Entrar";
+    Layout = "_LayoutPublico";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h1 class="h4 mb-3">Entrar</h1>
+
+        <form asp-action="Login" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-control" autocomplete="username" autofocus />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Senha" class="form-label"></label>
+                <input asp-for="Senha" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Senha" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </form>
+
+        <p class="text-muted small mt-3 mb-0">
+            Esqueceu a senha? Procure o administrador do sistema para redefini-la.
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

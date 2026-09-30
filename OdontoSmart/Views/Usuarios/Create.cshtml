@@ -1,0 +1,40 @@
+@model UsuarioCreateViewModel
+@{
+    ViewData["Title"] = "Novo usuário";
+}
+
+<h1 class="h3 mb-3">Novo usuário</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" method="post" novalidate>
+            <partial name="_UsuarioForm" model="Model" />
+
+            <div class="row g-3 mt-0">
+                <div class="col-md-6">
+                    <label asp-for="Senha" class="form-label"></label> <span class="text-danger">*</span>
+                    <input asp-for="Senha" class="form-control" autocomplete="new-password" />
+                    <div class="form-text">
+                        De 8 a 128 caracteres, com pelo menos uma letra e um número. O usuário deverá trocá-la no primeiro acesso.
+                    </div>
+                    <span asp-validation-for="Senha" class="text-danger small"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="ConfirmacaoSenha" class="form-label"></label> <span class="text-danger">*</span>
+                    <input asp-for="ConfirmacaoSenha" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="ConfirmacaoSenha" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Cadastrar usuário</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

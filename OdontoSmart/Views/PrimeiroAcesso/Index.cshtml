@@ -1,0 +1,52 @@
+@using OdontoSmart.Web.ViewModels.PrimeiroAcesso
+@model PrimeiroAcessoViewModel
+@{
+    ViewData["Title"] = "Primeiro acesso";
+    Layout = "_LayoutPublico";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h1 class="h4 mb-2">Primeiro acesso</h1>
+        <p class="text-muted">
+            Crie o administrador do sistema. Este será o usuário principal do OdontoSmart: ele poderá
+            cadastrar os demais usuários e profissionais da clínica.
+        </p>
+
+        <form asp-action="Index" method="post" novalidate>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="mb-3">
+                <label asp-for="NomeCompleto" class="form-label"></label> <span class="text-danger">*</span>
+                <input asp-for="NomeCompleto" class="form-control" autocomplete="name" autofocus />
+                <span asp-validation-for="NomeCompleto" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label> <span class="text-danger">*</span>
+                <input asp-for="Email" type="email" class="form-control" autocomplete="username" />
+                <div class="form-text">O e-mail será utilizado para entrar no sistema.</div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Senha" class="form-label"></label> <span class="text-danger">*</span>
+                <input asp-for="Senha" class="form-control" autocomplete="new-password" />
+                <div class="form-text">De 8 a 128 caracteres, com pelo menos uma letra e um número.</div>
+                <span asp-validation-for="Senha" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmacaoSenha" class="form-label"></label> <span class="text-danger">*</span>
+                <input asp-for="ConfirmacaoSenha" class="form-control" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmacaoSenha" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Criar administrador</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

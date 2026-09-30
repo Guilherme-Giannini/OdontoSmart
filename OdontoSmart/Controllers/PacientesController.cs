@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OdontoSmart.Application.Common;
 using OdontoSmart.Application.Pacientes;
+using OdontoSmart.Web.Autorizacao;
 using OdontoSmart.Web.ViewModels.Pacientes;
 
 namespace OdontoSmart.Web.Controllers;
 
+[Authorize(Policy = Politicas.ConsultarPacientes)]
 public class PacientesController(IPacienteService pacienteService) : Controller
 {
     private const string MensagemSucesso = "MensagemSucesso";
@@ -27,9 +30,11 @@ public class PacientesController(IPacienteService pacienteService) : Controller
         return View(PacienteDetailsViewModel.De(paciente));
     }
 
+    [Authorize(Policy = Politicas.EditarPacientes)]
     [HttpGet]
     public IActionResult Create() => View(new PacienteCreateViewModel());
 
+    [Authorize(Policy = Politicas.EditarPacientes)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(PacienteCreateViewModel model, CancellationToken cancellationToken)
@@ -48,6 +53,7 @@ public class PacientesController(IPacienteService pacienteService) : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Policy = Politicas.EditarPacientes)]
     [HttpGet]
     public async Task<IActionResult> Edit([FromRoute] Guid id, CancellationToken cancellationToken)
     {
@@ -58,6 +64,7 @@ public class PacientesController(IPacienteService pacienteService) : Controller
         return View(PacienteEditViewModel.De(paciente));
     }
 
+    [Authorize(Policy = Politicas.EditarPacientes)]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit([FromRoute] Guid id, PacienteEditViewModel model, CancellationToken cancellationToken)
@@ -82,6 +89,7 @@ public class PacientesController(IPacienteService pacienteService) : Controller
         return RedirectToAction(nameof(Details), new { id });
     }
 
+    [Authorize(Policy = Politicas.ExcluirPacientes)]
     [HttpGet]
     public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
     {
@@ -92,6 +100,7 @@ public class PacientesController(IPacienteService pacienteService) : Controller
         return View(PacienteDetailsViewModel.De(paciente));
     }
 
+    [Authorize(Policy = Politicas.ExcluirPacientes)]
     [HttpPost]
     [ActionName(nameof(Delete))]
     [ValidateAntiForgeryToken]

@@ -1,6 +1,9 @@
 @model PacienteDetailsViewModel
 @{
     ViewData["Title"] = Model.NomeCompleto;
+
+    var podeEditar = await Autorizacao.PermiteAsync(User, Politicas.EditarPacientes);
+    var podeExcluir = await Autorizacao.PermiteAsync(User, Politicas.ExcluirPacientes);
 }
 
 <h1 class="h3 mb-3">Paciente</h1>
@@ -12,7 +15,13 @@
 </div>
 
 <div class="d-flex flex-wrap gap-2">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Excluir</a>
+    @if (podeEditar)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    }
+    @if (podeExcluir)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Excluir</a>
+    }
     <a asp-action="Index" class="btn btn-outline-secondary">Voltar para pacientes</a>
 </div>

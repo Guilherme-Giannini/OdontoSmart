@@ -1,0 +1,33 @@
+@model UsuarioFormViewModel
+@{
+    var perfilBloqueado = Model is UsuarioEditViewModel { EhUsuarioAtual: true };
+}
+
+<div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+<div class="row g-3">
+    <div class="col-12">
+        <label asp-for="NomeCompleto" class="form-label"></label> <span class="text-danger">*</span>
+        <input asp-for="NomeCompleto" class="form-control" autocomplete="off" />
+        <span asp-validation-for="NomeCompleto" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-8">
+        <label asp-for="Email" class="form-label"></label> <span class="text-danger">*</span>
+        <input asp-for="Email" type="email" class="form-control" autocomplete="off" />
+        <div class="form-text">O e-mail é utilizado para entrar no sistema.</div>
+        <span asp-validation-for="Email" class="text-danger small"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="Perfil" class="form-label"></label> <span class="text-danger">*</span>
+        <select asp-for="Perfil" asp-items="UsuarioFormatacao.OpcoesPerfil" class="form-select">
+            <option value="">Selecione</option>
+        </select>
+        @if (perfilBloqueado)
+        {
+            <div class="form-text">Você não pode alterar o seu próprio perfil.</div>
+        }
+        <span asp-validation-for="Perfil" class="text-danger small"></span>
+    </div>
+</div>

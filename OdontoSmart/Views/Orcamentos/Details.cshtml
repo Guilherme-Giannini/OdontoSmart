@@ -2,41 +2,54 @@
 @{
     ViewData["Title"] = "Orçamento";
     var status = Model.AlteracaoStatus;
+
+    var podeEditar = await Autorizacao.PermiteAsync(User, Politicas.EditarOrcamentos);
+    var podeAlterarStatus = await Autorizacao.PermiteAsync(User, Politicas.AlterarStatusOrcamentos);
+    var podeExcluir = await Autorizacao.PermiteAsync(User, Politicas.ExcluirOrcamentos);
 }
 
 <h1 class="h3 mb-3">Orçamento</h1>
 
 <partial name="_OrcamentoDados" model="Model" />
 
-<div class="card mb-3" id="alterar-status">
-    <div class="card-header">Alterar status</div>
-    <div class="card-body">
-        @if (status.TransicoesPermitidas.Count == 0)
-        {
-            <p class="text-muted mb-0">
-                O status "@OrcamentoFormatacao.Status(status.StatusAtual)" não permite novas alterações.
-            </p>
-        }
-        else
-        {
-            <form asp-action="AlterarStatus" asp-route-id="@Model.Id" method="post" class="row g-2 align-items-end">
-                <div class="col-sm-6 col-md-4">
-                    <label for="NovoStatus" class="form-label">Novo status</label>
-                    <select id="NovoStatus" name="NovoStatus" class="form-select" required
-                            asp-items="OrcamentoFormatacao.OpcoesStatus(status.TransicoesPermitidas)">
-                        <option value="">Selecione</option>
-                    </select>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-warning">Alterar status</button>
-                </div>
-            </form>
-        }
+@if (podeAlterarStatus)
+{
+    <div class="card mb-3" id="alterar-status">
+        <div class="card-header">Alterar status</div>
+        <div class="card-body">
+            @if (status.TransicoesPermitidas.Count == 0)
+            {
+                <p class="text-muted mb-0">
+                    O status "@OrcamentoFormatacao.Status(status.StatusAtual)" não permite novas alterações.
+                </p>
+            }
+            else
+            {
+                <form asp-action="AlterarStatus" asp-route-id="@Model.Id" method="post" class="row g-2 align-items-end">
+                    <div class="col-sm-6 col-md-4">
+                        <label for="NovoStatus" class="form-label">Novo status</label>
+                        <select id="NovoStatus" name="NovoStatus" class="form-select" required
+                                asp-items="OrcamentoFormatacao.OpcoesStatus(status.TransicoesPermitidas)">
+                            <option value="">Selecione</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-warning">Alterar status</button>
+                    </div>
+                </form>
+            }
+        </div>
     </div>
-</div>
+}
 
 <div class="d-flex flex-wrap gap-2">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Excluir</a>
+    @if (podeEditar)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    }
+    @if (podeExcluir)
+    {
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Excluir</a>
+    }
     <a asp-action="Index" class="btn btn-outline-secondary">Voltar para orçamentos</a>
 </div>

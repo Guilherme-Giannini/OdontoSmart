@@ -1,0 +1,65 @@
+@model ProfissionalDetailsViewModel
+@{
+    ViewData["Title"] = Model.NomeExibicao;
+
+    const string naoInformado = "Não informado";
+    var podeGerenciar = await Autorizacao.PermiteAsync(User, Politicas.GerenciarProfissionais);
+}
+
+<div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <h1 class="h3 mb-0">Profissional</h1>
+    <span class="badge rounded-pill @ProfissionalFormatacao.ClasseSituacao(Model.Ativo)">@ProfissionalFormatacao.Situacao(Model.Ativo)</span>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Nome de exibição</dt>
+            <dd class="col-sm-9">@Model.NomeExibicao</dd>
+
+            <dt class="col-sm-3">CRO</dt>
+            <dd class="col-sm-9">@Model.Cro</dd>
+
+            <dt class="col-sm-3">Especialidade</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Especialidade) ? naoInformado : Model.Especialidade)</dd>
+
+            <dt class="col-sm-3">Telefone</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Telefone) ? naoInformado : Model.Telefone)</dd>
+
+            <dt class="col-sm-3">E-mail</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.Email) ? naoInformado : Model.Email)</dd>
+
+            <dt class="col-sm-3">Usuário vinculado</dt>
+            <dd class="col-sm-9">@(string.IsNullOrEmpty(Model.UsuarioVinculado) ? "Sem acesso ao sistema" : Model.UsuarioVinculado)</dd>
+
+            <dt class="col-sm-3">Data de cadastro</dt>
+            <dd class="col-sm-9">@Model.DataCadastro</dd>
+
+            <dt class="col-sm-3">Última atualização</dt>
+            <dd class="col-sm-9 mb-0">@(string.IsNullOrEmpty(Model.DataAtualizacao) ? "Nunca alterado" : Model.DataAtualizacao)</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="d-flex flex-wrap gap-2">
+    @if (podeGerenciar)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+
+        <form asp-action="AlterarAtivo" asp-route-id="@Model.Id" method="post"
+              data-confirmacao="@(Model.Ativo
+                  ? $"Deseja desativar o profissional {Model.NomeExibicao}? Ele deixará de ser oferecido em novas seleções."
+                  : $"Deseja reativar o profissional {Model.NomeExibicao}?")">
+            <input type="hidden" name="ativo" value="@(Model.Ativo ? "false" : "true")" />
+            @if (Model.Ativo)
+            {
+                <button type="submit" class="btn btn-outline-danger">Desativar</button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-outline-success">Reativar</button>
+            }
+        </form>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary">Voltar para profissionais</a>
+</div>
